@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>團隊成員 | 奈米感測實驗室</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 側邊欄與內容佈局 */
+        .layout-container {
+            display: flex;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: flex-start;
+        }
+
+        /* 側邊導覽選單設計 */
+        .sidebar-menu {
+            width: 250px;
+            background-color: #f5f6f8;
+            border-radius: 8px;
+            padding: 1rem 0;
+            flex-shrink: 0;
+            position: sticky;
+            top: 90px;
+        }
+        
+        .menu-title {
+            padding: 0.5rem 1.5rem 1rem;
+            font-size: 1.2rem;
+            color: #333;
+            font-weight: bold;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 0.5rem;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 0.8rem 1.5rem;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #fff;
+            color: var(--primary-purple);
+            border-left: 4px solid var(--accent-pink);
+            font-weight: bold;
+        }
+
+        /* 右側成員內容區 */
+        .content-area {
+            flex-grow: 1;
+        }
+
+        /* 隱藏/顯示控制 */
+        .year-section {
+            display: none;
+            animation: fadeIn 0.4s ease-in;
+        }
+        .year-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 成員卡片設計 (已移除研究方向相關樣式，更加精簡) */
+        .category-title { font-size: 1.5rem; color: var(--primary-purple); margin: 0 0 1.5rem; display: flex; align-items: center; gap: 15px; }
+        .category-title::after { content: ''; flex-grow: 1; height: 1px; background-color: var(--border-color); }
+        
+        .sub-category-title { font-size: 1.2rem; color: #555; margin: 0 0 1rem; font-weight: bold; }
+        
+        .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+        
+        .member-card { background: #fff; padding: 2rem 1.5rem; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: all 0.3s; }
+        .member-card:hover { transform: translateY(-5px); border-color: var(--primary-purple); box-shadow: 0 10px 20px rgba(142, 36, 170, 0.1); }
+        
+        .avatar { width: 90px; height: 90px; background-color: #f0f0f0; border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; color: #ccc; }
+        .member-name { font-size: 1.3rem; color: var(--nav-text); margin-bottom: 5px; font-weight: bold; }
+        .member-role { font-size: 0.95rem; color: var(--accent-pink); }
+        
+        /* RWD 適應 */
+        @media (max-width: 768px) {
+            .layout-container { flex-direction: column; }
+            .sidebar-menu { width: 100%; position: static; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 導覽列 -->
+    <nav>
+        <div class="logo"><a href="index.html"><img src="images/logo.png" alt="奈米感測實驗室"></a></div>
+        <ul>
+            <li><a href="index.html">首頁</a></li>
+            <li><a href="about.html">關於實驗室</a></li>
+            <li><a href="professor.html">指導教授</a></li>
+            <li><a href="members.html" class="active">團隊成員</a></li>
+            <li><a href="research.html">研究成果</a></li>
+        </ul>
+    </nav>
+
+    <section class="page-section gray-bg">
+        <h2 class="section-title">團隊成員</h2>
+        
+        <div class="layout-container">
+            <!-- 左側選單 -->
+            <div class="sidebar-menu">
+                <div class="menu-title">年度切換</div>
+                <div class="menu-item active" data-target="year-current">在校生</div>
+                <div class="menu-item" data-target="year-115">115 級畢業生</div>
+                <div class="menu-item" data-target="year-114">114 級畢業生</div>
+                <div class="menu-item" data-target="year-113">113 級畢業生</div>
+                <div class="menu-item" data-target="year-112">112 級畢業生</div>
+            </div>
+
+            <!-- 右側內容 -->
+            <div class="content-area">
+                
+                <!-- 在校生區塊 (預設顯示) -->
+                <div id="year-current" class="year-section active">
+                    
+                    <h3 class="category-title">碩士班</h3>
+                    
+                    <h4 class="sub-category-title">116 級 (碩二)</h4>
+                    <div class="member-grid">
+                        <div class="member-card">
+                            <div class="avatar">照片</div>
+                            <div class="member-name">學長姐 A</div>
+                            <div class="member-role">碩二生</div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="sub-category-title">117 級 (碩一)</h4>
+                    <div class="member-grid">
+                        <div class="member-card">
+                            <div class="avatar">照片</div>
+                            <div class="member-name">學弟妹 A</div>
+                            <div class="member-role">碩一生</div>
+                        </div>
+                    </div>
+
+                    <h3 class="category-title">大學部專題生</h3>
+                    
+                    <h4 class="sub-category-title">大四</h4>
+                    <div class="member-grid">
+                        <div class="member-card">
+                            <div class="avatar">照片</div>
+                            <div class="member-name">學長姐 B</div>
+                            <div class="member-role">大四專題生</div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="sub-category-title">大三</h4>
+                    <div class="member-grid">
+                        <div class="member-card">
+                            <div class="avatar">照片</div>
+                            <div class="member-name">郭哲源</div>
+                            <div class="member-role">大三專題生</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="avatar">照片</div>
+                            <div class="member-name">同學 B</div>
+                            <div class="member-role">大三專題生</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 115級畢業生區塊 -->
+                <div id="year-115" class="year-section">
+                    <h3 class="category-title">115 級畢業生</h3>
+                    <div class="member-grid">
+                        <div class="member-card">
+                            <div class="avatar">照片</div>
+                            <div class="member-name">學長 A</div>
+                            <div class="member-role">碩士畢業</div>
+                        </div>
+                        <div class="member-card">
+                            <div class="avatar">照片</div>
+                            <div class="member-name">學姊 B</div>
+                            <div class="member-role">碩士畢業</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 114級畢業生區塊 -->
+                <div id="year-114" class="year-section">
+                    <h3 class="category-title">114 級畢業生</h3>
+                    <div class="member-grid">
+                        <div class="member-card">
+                            <div class="avatar">照片</div>
+                            <div class="member-name">學長 C</div>
+                            <div class="member-role">碩士畢業</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 其他年度佔位符 -->
+                <div id="year-113" class="year-section">
+                    <h3 class="category-title">113 級畢業生</h3>
+                    <p style="color: #666;">資料建檔中...</p>
+                </div>
+                
+                <div id="year-112" class="year-section">
+                    <h3 class="category-title">112 級畢業生</h3>
+                    <p style="color: #666;">資料建檔中...</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁尾 -->
+    <footer>
+        <div class="sponsors-area">
+            <h4>產學合作 / 合作廠商</h4>
+            <div class="sponsor-logos">
+                <div>廠商 Logo 1</div><div>廠商 Logo 2</div>
+            </div>
+        </div>
+        <div class="footer-divider"></div>
+        <div class="contact-area">
+            <h4>聯絡我們</h4>
+            <div class="contact-info-row">
+                <p>電話：06-2606123 # 7012</p>
+                <p>信箱：shwu@mail.nutn.edu.tw</p>
+                <p>地址：701臺南市東區榮譽街67號 ZA107-2室 (榮譽校區)</p>
+            </div>
+        </div>
+        <div class="copyright"><p>&copy; 2026 國立臺南大學 電機工程學系 奈米感測實驗室. All Rights Reserved.</p></div>
+    </footer>
+
+    <!-- JavaScript 切換邏輯 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            const yearSections = document.querySelectorAll('.year-section');
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    menuItems.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+
+                    yearSections.forEach(section => section.classList.remove('active'));
+
+                    const targetId = this.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
