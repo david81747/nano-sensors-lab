@@ -7,55 +7,24 @@
     <link rel="stylesheet" href="style.css?v=6">
     <style>
         .article-container { max-width: 900px; margin: 4rem auto; padding: 3rem; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .article-title { font-size: 2rem; color: var(--primary-purple); margin-bottom: 1rem; line-height: 1.3; }
+        .article-title { font-size: 2rem; color: var(--primary-purple); margin-bottom: 1rem; line-height: 1.3; font-weight: bold; }
         .article-date { color: #888; font-size: 0.95rem; margin-bottom: 2rem; border-bottom: 1px solid #eee; padding-bottom: 1rem; }
         
+        .doc-frame { width: 100%; height: 80vh; border: none; border-radius: 4px; background: #fff; transition: opacity 0.3s; }
         .back-btn { display: inline-block; margin-top: 2rem; padding: 10px 20px; background: var(--accent-pink); color: #fff; text-decoration: none; border-radius: 4px; transition: 0.3s; text-align: center; }
         .back-btn:hover { background: #d81b60; }
-
-        /* ================= 原生渲染 (Native Rendering) 強制排版 ================= */
-        /* 這些 CSS 會強制蓋過 Google Docs 隱藏的排版設定，讓它 100% 聽我們的話 */
-        .native-doc-wrapper {
-            width: 100%;
-            overflow-x: hidden; /* 防止內容撐破螢幕 */
-            color: #333;
-            line-height: 1.8;
-            font-size: 1.1rem;
-        }
         
-        /* 強制所有圖片、表格、區塊最大只能 100% 寬度 */
-        .native-doc-wrapper * {
-            max-width: 100% !important;
-            height: auto !important; /* 保持圖片比例 */
-            box-sizing: border-box !important;
-        }
+        /* 載入動畫 */
+        .loader-spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-purple); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 2rem auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* 打破 Google Docs 的強制不換行或死板的寬度 */
-        .native-doc-wrapper p, 
-        .native-doc-wrapper span, 
-        .native-doc-wrapper td {
-            white-space: normal !important; 
-            word-break: break-word !important; 
-        }
-
-        /* 處理隱形表格：讓表格可以水平滑動，不會撐壞整個網頁 */
-        .native-doc-wrapper table {
-            width: 100% !important;
-            display: block;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* ================= 手機版專屬極致滿版優化 ================= */
+        /* ================= 手機版專屬優化 ================= */
         @media (max-width: 768px) {
             .page-section { padding-left: 0 !important; padding-right: 0 !important; }
-            .article-container { 
-                margin: 0 !important; 
-                padding: 20px !important; /* 改用原生渲染後，可以給一點內距讓閱讀更舒服 */
-                border-radius: 0; 
-                box-shadow: none; 
-            }
+            .article-container { margin: 0 !important; padding: 20px 0 !important; border-radius: 0; box-shadow: none; }
+            .article-title, .article-date { padding-left: 20px; padding-right: 20px; }
             .article-title { font-size: 1.5rem; }
+            .doc-frame { height: 85vh; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
         }
     </style>
 </head>
@@ -75,7 +44,10 @@
 
     <section class="page-section gray-bg">
         <div class="article-container" id="article-body">
-            <p style="text-align: center; color: #666; padding: 3rem 0;">文章載入中，請稍候...</p>
+            <div style="text-align: center; padding: 3rem 0;">
+                <div class="loader-spinner"></div>
+                <p style="color: #666; margin-top: 15px;">文章極速載入中...</p>
+            </div>
         </div>
     </section>
 
@@ -99,86 +71,100 @@
     </footer>
 
     <script>
+        // 漢堡選單邏輯
         const mobileMenu = document.getElementById('mobile-menu');
         const navMenu = document.getElementById('nav-menu');
         if(mobileMenu && navMenu) {
-            mobileMenu.addEventListener('click', () => {
-                navMenu.classList.toggle('active');
-            });
+            mobileMenu.addEventListener('click', () => { navMenu.classList.toggle('active'); });
         }
 
         const urlParams = new URLSearchParams(window.location.search);
         const articleTitle = urlParams.get('title');
         const scriptUrl = "https://script.google.com/macros/s/AKfycby6nER3S_UDSxUI6xuf5dh3erxRL4eqDlDSgIz09OL9f4PhDTuV8CS2X_8RDsoEAAGmOA/exec";
 
+        // 主渲染函數
+        function renderArticle(articleData, contentHtml) {
+            let dateStr = "";
+            if (articleData.date) {
+                const d = new Date(articleData.date);
+                dateStr = isNaN(d.getTime()) ? articleData.date : d.toLocaleDateString('zh-TW');
+            }
+
+            document.getElementById('article-body').innerHTML = `
+                <h1 class="article-title">${articleData.title}</h1>
+                <div class="article-date">${dateStr}</div>
+                <div style="text-align: right; margin-bottom: 15px; padding-right: 15px;">
+                    <a href="${articleData.link}" target="_blank" style="background-color: #f3c623; color: #222; padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">🔍 另開視窗閱讀</a>
+                </div>
+                ${contentHtml}
+                <div style="text-align: center; margin-top: 1.5rem; margin-bottom: 1rem;">
+                    <a href="index.html#news" class="back-btn">回最新消息</a>
+                </div>
+            `;
+        }
+
+        // 開始抓取資料
         fetch(scriptUrl)
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
-                const container = document.getElementById('article-body');
                 const article = data.find(item => item.title === articleTitle);
+                if (!article) {
+                    document.getElementById('article-body').innerHTML = '<h2>找不到該篇文章</h2><a href="index.html#news" class="back-btn">回首頁</a>';
+                    return;
+                }
 
-                if (article) {
-                    let dateStr = "";
-                    if (article.date) {
-                        const d = new Date(article.date);
-                        dateStr = isNaN(d.getTime()) ? article.date : d.toLocaleDateString('zh-TW');
-                    }
+                let targetUrl = article.link;
+                const fallbackIframe = `<iframe src="${targetUrl}${targetUrl.includes('?') ? '&' : '?'}embedded=true" class="doc-frame" title="${article.title}"></iframe>`;
 
-                    // 基本框架準備好
-                    container.innerHTML = `
-                        <h1 class="article-title">${article.title}</h1>
-                        <div class="article-date">${dateStr}</div>
-                        <div id="dynamic-content-area" style="min-height: 300px; text-align: center; color: #888;">
-                            <img src="https://i.gifer.com/ZZ5H.gif" alt="loading" style="width: 30px; margin-top: 50px;">
-                            <p>正在為您抽取文章內容...</p>
-                        </div>
-                        <div style="text-align: center; margin-top: 2rem;">
-                            <a href="index.html#news" class="back-btn">回最新消息</a>
-                        </div>
-                    `;
+                if (targetUrl && targetUrl.includes('/pub')) {
+                    // 【加速機制】：檢查瀏覽器是否已經有這篇的暫存 (Session Cache)
+                    const cacheKey = `article_html_${articleTitle}`;
+                    const cachedHtml = sessionStorage.getItem(cacheKey);
 
-                    const contentArea = document.getElementById('dynamic-content-area');
-                    let targetUrl = article.link;
-
-                    // 備用方案：如果擷取失敗，退回使用 iframe
-                    const fallbackIframe = `<iframe src="${targetUrl}${targetUrl.includes('?') ? '&' : '?'}embedded=true" style="width: 100%; height: 80vh; border: none; background: #f9f9f9;"></iframe>`;
-
-                    if (targetUrl && targetUrl.includes('/pub')) {
-                        // 使用中介 API (CORS Proxy) 來抓取 Google Docs 的網頁原始碼
-                        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+                    if (cachedHtml) {
+                        // 如果有暫存，0秒瞬間渲染！
+                        renderArticle(article, cachedHtml);
+                    } else {
+                        // 如果沒有暫存，使用更快的 /raw API 抓取原始碼
+                        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
                         
                         fetch(proxyUrl)
-                            .then(res => res.json())
-                            .then(htmlData => {
-                                if(htmlData.contents) {
-                                    // 將抓到的純文字轉化為真實的 HTML 節點
-                                    const parser = new DOMParser();
-                                    const doc = parser.parseFromString(htmlData.contents, 'text/html');
-                                    
-                                    // 找出 Google Docs 裝載真實內容的區塊 (通常是 id="contents")
-                                    const extractedContent = doc.querySelector('#contents') || doc.body;
-                                    
-                                    // 將抽出來的純淨內容塞進我們自己的網頁，並套用嚴格的 CSS 規範
-                                    contentArea.innerHTML = `<div class="native-doc-wrapper">${extractedContent.innerHTML}</div>`;
-                                    contentArea.style.textAlign = 'left';
-                                } else {
-                                    contentArea.innerHTML = fallbackIframe;
-                                }
+                            .then(res => res.text()) // 直接要純文字，省去 JSON 解析時間
+                            .then(rawHtml => {
+                                // 【外科手術注入】：在 Google Docs 的 <head> 裡面打入響應式疫苗！
+                                const injectedHtml = rawHtml.replace('</head>', `
+                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                    <style>
+                                        /* 強制消除 Google Docs 的 A4 紙張與邊界設定 */
+                                        body { padding: 0 !important; margin: 0 !important; background-color: transparent !important; }
+                                        #contents { padding: 15px !important; max-width: 100% !important; margin: 0 !important; width: 100% !important; box-sizing: border-box !important; }
+                                        /* 確保所有文字自動斷行，圖片與表格 100% 寬度 */
+                                        p, span, td, h1, h2, h3, h4, li { white-space: normal !important; word-wrap: break-word !important; }
+                                        img { max-width: 100% !important; height: auto !important; }
+                                        table { width: 100% !important; max-width: 100% !important; }
+                                        .c1, .c2, .c3 { max-width: 100% !important; } /* 針對 Docs 常見 class 壓制 */
+                                    </style>
+                                    </head>
+                                `);
+
+                                // 使用 iframe 的 srcdoc 屬性，把打好疫苗的原始碼直接渲染出來
+                                const finalIframe = `<iframe srcdoc="${injectedHtml.replace(/"/g, '&quot;')}" class="doc-frame" title="${article.title}"></iframe>`;
+                                
+                                // 存入暫存，下次點擊秒開
+                                sessionStorage.setItem(cacheKey, finalIframe);
+                                renderArticle(article, finalIframe);
                             })
                             .catch(err => {
-                                // 如果網路阻擋，無縫切換回 iframe
-                                contentArea.innerHTML = fallbackIframe;
+                                renderArticle(article, fallbackIframe); // 失敗退回預設 iframe
                             });
-                    } else {
-                        // 如果這不是 /pub 網址，直接用 iframe
-                        contentArea.innerHTML = fallbackIframe;
                     }
                 } else {
-                    container.innerHTML = '<h2>找不到該篇文章</h2><a href="index.html#news" class="back-btn">回首頁</a>';
+                    // 一般共用連結，直接用 fallback
+                    renderArticle(article, fallbackIframe);
                 }
             })
             .catch(error => {
-                document.getElementById('article-body').innerHTML = '<p>資料載入失敗，請稍後再試。</p>';
+                document.getElementById('article-body').innerHTML = '<p>資料載入失敗，請確認網路連線。</p>';
             });
     </script>
 </body>
