@@ -112,10 +112,42 @@
         }
 
         /* 手機版：一次只顯示 1 張卡片 */
-        @media (max-width: 768px) {
-            .carousel-wrapper { padding: 0 40px; }
-            .news-card { flex: 0 0 100%; }
-        }
+        /* 手機版：一次只顯示 1 張卡片，並將首頁橫幅極致瘦身 */
+     @media (max-width: 768px) {
+         .carousel-wrapper { padding: 0 40px; }
+         .news-card { flex: 0 0 100%; }
+
+         /* ===== 首頁橫幅手機版專屬縮小設定 ===== */
+         .hero-banner {
+             height: auto;
+             padding: 40px 5%; /* 大幅縮小上下留白，讓橫幅變扁 */
+             margin-top: 60px;
+         }
+         .hero-banner h1 { 
+             font-size: 2rem; /* 主標題大幅縮小 */
+             margin-bottom: 5px; 
+         }
+         .hero-banner h2 { 
+             font-size: 1.2rem; /* 英文副標題縮小 */
+             margin-bottom: 15px; 
+         }
+         .hero-banner h3 { 
+             font-size: 0.9rem; 
+         }
+         .hero-info-bar { 
+             gap: 10px; /* 讓日期與按鈕靠攏 */
+         }
+         .hero-date { 
+             font-size: 1.2rem; 
+         }
+         .hero-date span { 
+             font-size: 0.9rem; 
+         }
+         .yellow-pill { 
+             padding: 6px 15px; 
+             font-size: 0.9rem; 
+         }
+     }
 
         /* 頁尾區塊 */
         footer { background-color: #f8f9fa; padding: 4rem 10% 2rem 10%; color: #555; }
