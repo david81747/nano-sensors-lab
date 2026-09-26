@@ -64,7 +64,7 @@ footer { background-color: #f8f9fa; padding: 4rem 10% 2rem 10%; color: #555; bor
 }
 
 @media (max-width: 768px) {
-    /* 1. 導覽列漢堡選單 */
+    /* 1. 導覽列變身漢堡選單 */
     nav {
         flex-direction: row;
         justify-content: space-between;
@@ -74,6 +74,7 @@ footer { background-color: #f8f9fa; padding: 4rem 10% 2rem 10%; color: #555; bor
     
     .menu-toggle { display: block; }
     
+    /* 漢堡選單展開後的樣式：防透視、強制置中 */
     nav ul {
         display: none;
         flex-direction: column;
@@ -81,60 +82,38 @@ footer { background-color: #f8f9fa; padding: 4rem 10% 2rem 10%; color: #555; bor
         top: 100%;
         left: 0;
         width: 100%;
-        background: rgba(255, 255, 255, 0.98);
+        background: #ffffff !important; /* 改為純白實心背景，絕不透光 */
         box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-        padding: 0; margin: 0; z-index: 999;
+        padding: 0 !important; /* 強制清除預設邊距 */
+        margin: 0 !important;
+        z-index: 999;
     }
     
     nav ul.active { display: flex; }
-    nav ul li { width: 100%; text-align: center; border-bottom: 1px solid #f0f0f0; }
-    nav ul li a { display: block; padding: 15px 0; font-size: 1rem; } /* 選單字體稍微縮小 */
-
-    /* 2. 首頁橫幅與文字「極致瘦身」(參照育秀盃比例) */
-    .hero-banner {
-        padding: 60px 5% 40px 5%; /* 減少上下高度，讓橫幅變扁 */
-        height: auto; 
-        min-height: auto; /* 取消強制高度，讓它自然貼合 */
-        text-align: center; 
-        align-items: center;
-        margin-top: 55px; /* 貼合手機版較矮的導覽列 */
+    
+    nav ul li {
+        width: 100%;
+        text-align: center !important; /* 強制文字絕對置中 */
+        border-bottom: 1px solid #f0f0f0;
+        padding: 0 !important;
+        margin: 0 !important;
+        list-style: none !important;
     }
-    .hero-banner h3 { 
-        font-size: 0.85rem; /* 系所名稱縮小 */
-        margin-bottom: 8px; 
-        letter-spacing: 1px;
-    }
-    .hero-banner h1 { 
-        font-size: 1.8rem; /* 主標題大幅縮小 (原本可能在手機上斷行了) */
-        margin-bottom: 5px; 
-        line-height: 1.2; 
-    }
-    .hero-banner h2 { 
-        font-size: 1.1rem; /* 英文副標題縮小 */
-        margin-bottom: 20px; 
-    }
-    .hero-info-bar { 
-        justify-content: center; 
-        gap: 15px; /* 縮小日期與按鈕的間距 */
-    }
-    .hero-date { 
-        font-size: 1.2rem; /* 日期數字縮小 */
-    }
-    .hero-date span { 
-        font-size: 0.85rem; /* 日期英文縮小 */
-    }
-    .yellow-pill {
-        padding: 6px 15px; /* 按鈕變精緻 */
-        font-size: 0.85rem;
+    
+    nav ul li a {
+        display: block;
+        padding: 15px 0 !important;
+        font-size: 1.1rem;
+        width: 100%;
     }
 
-    /* 3. 防止表格撐破螢幕 */
+    /* 2. 防止表格撐破螢幕 */
     table {
         display: block; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; 
     }
 
-    /* 4. 內距縮減 */
-    .news-section, .page-section, footer { padding: 2.5rem 5%; }
+    /* 3. 內距縮減 */
+    .news-section, .page-section, footer { padding: 3rem 5%; }
     .contact-info-row { flex-direction: column; gap: 15px; text-align: center; }
     .contact-area h4, .sponsors-area h4 { text-align: center; }
 }
