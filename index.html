@@ -4,37 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>奈米感測實驗室 | 國立臺南大學 電機系</title>
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=3">
     <style>
         /* ================= 首頁專屬樣式 ================= */
+        
+        /* 修改 1: 讓導覽列固定在最上方，並讓橫幅貼齊 */
+        nav {
+            position: fixed; /* 固定在上方 */
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
         .hero-banner {
-            height: 70vh; 
+            /* 移除原本的 margin-top，改用 padding-top 把被導覽列遮住的空間補回來 */
+            padding-top: 120px; 
+            padding-bottom: 80px;
+            height: auto; 
+            min-height: auto;
             background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 0 10%;
             color: #ffffff;
-            margin-top: 60px; 
+            text-align: center; /* 預位置中 */
         }
-        .hero-banner h3 { font-size: 1.2rem; font-weight: 400; margin-bottom: 10px; letter-spacing: 2px; }
-        .hero-banner h1 { font-size: 4rem; font-weight: bold; line-height: 1.2; margin-bottom: 5px; }
+        
+        .hero-banner h3 { font-size: 1.2rem; font-weight: 400; margin-bottom: 15px; letter-spacing: 2px; }
+        .hero-banner h1 { font-size: 4rem; font-weight: bold; line-height: 1.2; margin-bottom: 10px; }
         .hero-banner h2 { font-size: 2.5rem; font-weight: normal; margin-bottom: 30px; color: #e0e0e0; }
-        .hero-info-bar { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .hero-info-bar { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
         .hero-date { font-size: 2rem; font-weight: bold; display: flex; align-items: baseline; gap: 10px; }
         .hero-date span { font-size: 1.2rem; font-weight: normal; }
-        .yellow-pill { background-color: #f3c623; color: #222; padding: 8px 20px; border-radius: 30px; font-weight: bold; font-size: 1rem; text-decoration: none; transition: background 0.3s; }
+        .yellow-pill { background-color: #f3c623; color: #222; padding: 10px 25px; border-radius: 30px; font-weight: bold; font-size: 1.1rem; text-decoration: none; transition: background 0.3s; }
         .yellow-pill:hover { background-color: #d4a919; }
 
         /* ======== 最新消息無縫輪播區塊 ======== */
-        .news-section { padding: 5rem 10%; background-color: #ffffff; text-align: center; }
+        .news-section { padding: 5rem 5%; background-color: #ffffff; text-align: center; }
         .section-title { font-size: 2rem; color: #333; margin-bottom: 3rem; font-weight: normal; letter-spacing: 2px; }
         
         .carousel-wrapper {
             position: relative;
             max-width: 1050px; 
             margin: 0 auto;
-            padding: 0 50px; 
+            padding: 0 50px; /* 電腦版預留左右箭頭空間 */
         }
         
         .carousel-viewport {
@@ -47,12 +62,11 @@
             display: flex; 
             gap: 20px; 
             text-align: left; 
-            /* 滑動與透明度漸變的動畫設定 */
             transition: transform 0.5s ease-in-out, opacity 0.3s ease; 
         }
 
         .news-card { 
-            flex: 0 0 calc((100% - 40px) / 3); 
+            flex: 0 0 calc((100% - 40px) / 3); /* 電腦版顯示 3 張 */
             background: #fff; border: 1px solid #eaeaea; border-radius: 8px; overflow: hidden; 
             transition: box-shadow 0.3s; display: flex; flex-direction: column; 
         }
@@ -65,7 +79,7 @@
         .read-more { font-size: 0.9rem; color: #555; text-decoration: none; font-weight: bold; }
         .read-more:hover { color: #8e24aa; }
 
-        /* 左右切換按鈕 */
+        /* 左右切換按鈕 (預設顯示) */
         .nav-btn {
             position: absolute;
             top: 50%;
@@ -80,7 +94,6 @@
             cursor: pointer;
             z-index: 10;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -106,72 +119,46 @@
         }
         .dot:hover { background-color: #a0a0a0; }
         .dot.active {
-            background-color: #8e24aa; /* 實驗室主題紫 */
-            width: 30px; /* 作用中時變成藥丸狀 */
+            background-color: #8e24aa; 
+            width: 30px; 
             border-radius: 10px;
         }
 
-        /* 手機版：一次只顯示 1 張卡片 */
-        /* 手機版：一次只顯示 1 張卡片，並將首頁橫幅極致瘦身 */
-     @media (max-width: 768px) {
-         .carousel-wrapper { padding: 0 40px; }
-         .news-card { flex: 0 0 100%; }
+        /* ================= 手機版專屬樣式 ================= */
+        @media (max-width: 768px) {
+            
+            /* 修改 1.2: 手機版橫幅貼齊導覽列 */
+            .hero-banner {
+                padding-top: 100px; /* 避開較矮的導覽列 */
+                padding-bottom: 40px;
+            }
+            .hero-banner h1 { font-size: 2.2rem; margin-bottom: 10px; }
+            .hero-banner h2 { font-size: 1.3rem; margin-bottom: 20px; }
+            .hero-banner h3 { font-size: 1rem; margin-bottom: 10px; }
+            .hero-info-bar { gap: 15px; }
+            .hero-date { font-size: 1.5rem; }
+            .yellow-pill { padding: 8px 18px; font-size: 1rem; }
 
-         /* ===== 首頁橫幅手機版專屬縮小設定 ===== */
-         .hero-banner {
-             height: auto;
-             padding: 40px 5%; /* 大幅縮小上下留白，讓橫幅變扁 */
-             margin-top: 60px;
-         }
-         .hero-banner h1 { 
-             font-size: 2rem; /* 主標題大幅縮小 */
-             margin-bottom: 5px; 
-         }
-         .hero-banner h2 { 
-             font-size: 1.2rem; /* 英文副標題縮小 */
-             margin-bottom: 15px; 
-         }
-         .hero-banner h3 { 
-             font-size: 0.9rem; 
-         }
-         .hero-info-bar { 
-             gap: 10px; /* 讓日期與按鈕靠攏 */
-         }
-         .hero-date { 
-             font-size: 1.2rem; 
-         }
-         .hero-date span { 
-             font-size: 0.9rem; 
-         }
-         .yellow-pill { 
-             padding: 6px 15px; 
-             font-size: 0.9rem; 
-         }
-     }
-
-        /* 頁尾區塊 */
-        footer { background-color: #f8f9fa; padding: 4rem 10% 2rem 10%; color: #555; }
-        .sponsors-area { text-align: center; margin-bottom: 3rem; }
-        .sponsors-area h4 { font-size: 1.2rem; font-weight: normal; margin-bottom: 2rem; color: #333; }
-        .sponsor-logos { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; align-items: center; margin-bottom: 2rem; }
-        .sponsor-logos div { width: 120px; height: 50px; background-color: #e9ecef; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #999; border-radius: 4px; }
-        .footer-divider { height: 1px; background-color: #ddd; margin: 2rem 0; }
-        .contact-area { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
-        .contact-area h4 { font-size: 1.2rem; color: #333; margin-bottom: 10px; }
-        .contact-info-row { display: flex; gap: 40px; flex-wrap: wrap; font-size: 0.95rem; }
-        .copyright { text-align: center; font-size: 0.85rem; color: #888; margin-top: 2rem; }
+            /* 修改 2: 手機版移除箭頭，卡片滿版顯示 */
+            .carousel-wrapper { 
+                padding: 0; /* 移除左右空間，讓卡片頂到邊 */
+            }
+            .nav-btn { 
+                display: none; /* 隱藏左右箭頭 */
+            }
+            .news-card { 
+                flex: 0 0 100%; /* 一次只顯示 1 張，佔滿寬度 */
+            }
+        }
     </style>
 </head>
 <body>
 
     <nav>
         <div class="logo"><a href="index.html"><img src="images/logo.png" alt="奈米感測實驗室"></a></div>
-        
-        <!-- 手機版漢堡按鈕 -->
         <div class="menu-toggle" id="mobile-menu">☰</div>
-        
         <ul id="nav-menu">
-            <li><a href="index.html">首頁</a></li>
+            <li><a href="index.html" style="color: #8e24aa; font-weight: bold;">首頁</a></li>
             <li><a href="about.html">關於實驗室</a></li>
             <li><a href="professor.html">指導教授</a></li>
             <li><a href="members.html">團隊成員</a></li>
@@ -215,8 +202,6 @@
             <div class="sponsor-logos">
                 <div>廠商 Logo 1</div>
                 <div>廠商 Logo 2</div>
-                <div>廠商 Logo 3</div>
-                <div>廠商 Logo 4</div>
             </div>
         </div>
         <div class="footer-divider"></div>
@@ -234,14 +219,16 @@
     </footer>
 
     <script>
-        // 漢堡選單切換邏輯
+        // 漢堡選單邏輯
         const mobileMenu = document.getElementById('mobile-menu');
         const navMenu = document.getElementById('nav-menu');
+        
         if(mobileMenu && navMenu) {
             mobileMenu.addEventListener('click', () => {
                 navMenu.classList.toggle('active');
             });
         }
+
         const scriptUrl = "https://script.google.com/macros/s/AKfycby6nER3S_UDSxUI6xuf5dh3erxRL4eqDlDSgIz09OL9f4PhDTuV8CS2X_8RDsoEAAGmOA/exec";
 
         fetch(scriptUrl)
@@ -260,15 +247,8 @@
                     return;
                 }
 
-                // 【防呆機制】：為了確保網頁有足夠的卡片來形成「無縫無限迴圈」
-                // 如果文章數小於 4 篇，程式會在背後自動複製一份資料來填滿軌道，但下方點點依然只會顯示真實的篇數
-                let renderData = [...originalData];
-                while (renderData.length < 4) {
-                    renderData = renderData.concat(originalData);
-                }
-
-                // 產生卡片
-                renderData.forEach((item, index) => {
+                // 產生真實文章卡片
+                originalData.forEach((item, index) => {
                     let imgSrc = 'https://via.placeholder.com/400x250?text=News+Image';
                     if (item.image) {
                         if (item.image.includes('drive.google.com')) {
@@ -281,11 +261,8 @@
                     
                     let dateStr = item.date ? (isNaN(new Date(item.date).getTime()) ? item.date : new Date(item.date).toLocaleDateString('zh-TW')) : "";
                     
-                    // data-real-index 紀錄這張卡片對應的是第幾個「小點點」
-                    let realIndex = index % realTotal; 
-
                     container.innerHTML += `
-                        <div class="news-card" data-real-index="${realIndex}">
+                        <div class="news-card" data-index="${index}">
                             <img src="${imgSrc}" alt="${item.title}" class="news-img" onerror="this.src='https://via.placeholder.com/400x250?text=News+Image'">
                             <div class="news-content">
                                 <h3 class="news-title">${item.title}</h3>
@@ -297,82 +274,72 @@
                     `;
                 });
 
-                // 產生下方小點點
+                // 修改 3: 一篇文章對應一個點點
                 for(let i = 0; i < realTotal; i++) {
                     dotsContainer.innerHTML += `<div class="dot ${i === 0 ? 'active' : ''}" data-idx="${i}"></div>`;
                 }
 
-                initCarousel();
+                initCarousel(realTotal);
             })
             .catch(error => {
                 document.getElementById('news-container').innerHTML = '<p style="text-align: center; color: #666; width: 100%;">資料載入失敗，請稍後再試。</p>';
             });
 
-        // ================= 核心邏輯：無縫輪播 =================
-        function initCarousel() {
+        // ================= 修改後的輪播邏輯 =================
+        function initCarousel(totalCards) {
             const track = document.getElementById('news-container');
             const dots = document.querySelectorAll('.dot');
-            let isAnimating = false;
+            let currentIndex = 0;
             let autoSlideInterval;
-
-            // 取得移動距離 (一張卡片的寬度 + 20px 的間距)
-            function getCardWidth() {
-                return track.firstElementChild.offsetWidth + 20; 
+            
+            // 判斷目前是電腦版(3張)還是手機版(1張)
+            function getCardsToShow() {
+                return window.innerWidth <= 768 ? 1 : 3;
             }
 
-            // 更新下方小點點的顏色
-            function updateActiveDot() {
-                let currentRealIndex = track.firstElementChild.dataset.realIndex;
+            // 更新畫面位置與點點狀態
+            function updateCarousel() {
+                const cardsToShow = getCardsToShow();
+                // 確保不會滑過頭，留下空白區域
+                if (currentIndex > totalCards - cardsToShow) {
+                    currentIndex = totalCards - cardsToShow;
+                    if(currentIndex < 0) currentIndex = 0; 
+                }
+
+                const cardWidth = track.firstElementChild.offsetWidth + 20; // 卡片寬度 + gap
+                track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+
+                // 更新點點
                 dots.forEach(d => d.classList.remove('active'));
-                if(dots[currentRealIndex]) {
-                    dots[currentRealIndex].classList.add('active');
+                if(dots[currentIndex]) {
+                    dots[currentIndex].classList.add('active');
                 }
             }
 
-            // 往右看下一張 (無限右滑)
             function moveToNext() {
-                if (isAnimating) return;
-                isAnimating = true;
-                
-                track.style.transition = 'transform 0.5s ease-in-out';
-                track.style.transform = `translateX(-${getCardWidth()}px)`;
+                const cardsToShow = getCardsToShow();
+                if (totalCards <= cardsToShow) return;
 
-                // 動畫結束後，瞬間把第一張卡片搬到最後面，並把軌道歸零 (視覺上零誤差)
-                track.addEventListener('transitionend', function handler() {
-                    track.removeEventListener('transitionend', handler);
-                    track.style.transition = 'none';
-                    track.appendChild(track.firstElementChild); 
-                    track.style.transform = 'translateX(0)';
-                    updateActiveDot();
-                    isAnimating = false;
-                });
+                if (currentIndex >= totalCards - cardsToShow) {
+                    currentIndex = 0; // 到底回到第一張
+                } else {
+                    currentIndex++;
+                }
+                updateCarousel();
             }
 
-            // 往左看上一張 (無限左滑)
             function moveToPrev() {
-                if (isAnimating) return;
-                isAnimating = true;
+                const cardsToShow = getCardsToShow();
+                if (totalCards <= cardsToShow) return;
 
-                // 瞬間把最後一張卡片搬到最前面，並把軌道往左推
-                track.style.transition = 'none';
-                track.insertBefore(track.lastElementChild, track.firstElementChild);
-                track.style.transform = `translateX(-${getCardWidth()}px)`;
-                
-                // 強制瀏覽器重新計算畫面
-                void track.offsetWidth;
-
-                // 再滑順地移動到歸零位置
-                track.style.transition = 'transform 0.5s ease-in-out';
-                track.style.transform = 'translateX(0)';
-
-                track.addEventListener('transitionend', function handler() {
-                    track.removeEventListener('transitionend', handler);
-                    updateActiveDot();
-                    isAnimating = false;
-                });
+                if (currentIndex <= 0) {
+                    currentIndex = totalCards - cardsToShow; // 到頭跳到最後
+                } else {
+                    currentIndex--;
+                }
+                updateCarousel();
             }
 
-            // 自動輪播
             function startAutoSlide() {
                 autoSlideInterval = setInterval(moveToNext, 4000);
             }
@@ -381,32 +348,23 @@
                 startAutoSlide();
             }
 
-            // 綁定左右箭頭點擊事件
             document.getElementById('next-btn').addEventListener('click', () => { moveToNext(); resetAutoSlide(); });
             document.getElementById('prev-btn').addEventListener('click', () => { moveToPrev(); resetAutoSlide(); });
 
-            // 綁定小點點點擊事件 (使用淡入淡出效果來瞬間切換)
+            // 點點直接跳轉
             dots.forEach(dot => {
                 dot.addEventListener('click', () => {
-                    if (isAnimating) return;
-                    const targetIdx = parseInt(dot.dataset.idx);
-                    
-                    track.style.transition = 'opacity 0.3s ease';
-                    track.style.opacity = '0'; // 先讓卡片變透明
-                    
-                    setTimeout(() => {
-                        // 在隱藏狀態下，不斷搬動卡片直到第一張符合目標點點
-                        while (parseInt(track.firstElementChild.dataset.realIndex) !== targetIdx) {
-                            track.appendChild(track.firstElementChild);
-                        }
-                        updateActiveDot();
-                        track.style.opacity = '1'; // 再次顯示卡片
-                        resetAutoSlide();
-                    }, 300);
+                    currentIndex = parseInt(dot.dataset.idx);
+                    updateCarousel();
+                    resetAutoSlide();
                 });
             });
 
-            // 啟動輪播
+            // 視窗大小改變時，重新計算排版
+            window.addEventListener('resize', () => {
+                updateCarousel();
+            });
+
             startAutoSlide();
         }
     </script>
