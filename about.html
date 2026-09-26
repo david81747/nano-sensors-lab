@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>關於實驗室 | 奈米感測實驗室</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- 修正 1：補上最新的 CSS 版本號確保讀取到完美置中的選單 -->
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 
@@ -16,7 +17,8 @@
         
         <ul id="nav-menu">
             <li><a href="index.html">首頁</a></li>
-            <li><a href="about.html">關於實驗室</a></li>
+            <!-- 修正 2：將當前頁面「關於實驗室」加上高亮標示 -->
+            <li><a href="about.html" style="color: #8e24aa; font-weight: bold;">關於實驗室</a></li>
             <li><a href="professor.html">指導教授</a></li>
             <li><a href="members.html">團隊成員</a></li>
             <li><a href="research.html">研究成果</a></li>
@@ -77,7 +79,7 @@
         <div class="copyright"><p>&copy; 2026 國立臺南大學 電機工程學系 奈米感測實驗室. All Rights Reserved.</p></div>
     </footer>
 
-    <!-- 就是缺了這段！漢堡選單切換邏輯 -->
+    <!-- 漢堡選單切換邏輯 -->
     <script>
         const mobileMenu = document.getElementById('mobile-menu');
         const navMenu = document.getElementById('nav-menu');

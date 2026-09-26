@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>團隊成員 | 奈米感測實驗室</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- 修正 1：補上最新的 CSS 版本號 -->
+    <link rel="stylesheet" href="style.css?v=5">
     <style>
         .members-layout { display: flex; gap: 3rem; margin-top: 2rem; align-items: flex-start; }
         
@@ -60,7 +61,7 @@
 <body>
 
     <!-- 導覽列 -->
-   <nav>
+    <nav>
         <div class="logo"><a href="index.html"><img src="images/logo.png" alt="奈米感測實驗室"></a></div>
         
         <!-- 手機版漢堡按鈕 -->
@@ -70,7 +71,8 @@
             <li><a href="index.html">首頁</a></li>
             <li><a href="about.html">關於實驗室</a></li>
             <li><a href="professor.html">指導教授</a></li>
-            <li><a href="members.html">團隊成員</a></li>
+            <!-- 修正 2：將當前頁面「團隊成員」加上高亮標示 -->
+            <li><a href="members.html" style="color: #8e24aa; font-weight: bold;">團隊成員</a></li>
             <li><a href="research.html">研究成果</a></li>
         </ul>
     </nav>
@@ -92,7 +94,23 @@
         </div>
     </section>
 
+    <!-- 修正 3：補齊完整的頁尾 -->
     <footer>
+        <div class="sponsors-area">
+            <h4>產學合作 / 合作廠商</h4>
+            <div class="sponsor-logos">
+                <div>廠商 Logo 1</div><div>廠商 Logo 2</div>
+            </div>
+        </div>
+        <div class="footer-divider"></div>
+        <div class="contact-area">
+            <h4>聯絡我們</h4>
+            <div class="contact-info-row">
+                <p>電話：06-2606123 # 7012</p>
+                <p>信箱：shwu@mail.nutn.edu.tw</p>
+                <p>地址：701臺南市東區榮譽街67號 ZA107-2室 (榮譽校區)</p>
+            </div>
+        </div>
         <div class="copyright"><p>&copy; 2026 國立臺南大學 電機工程學系 奈米感測實驗室. All Rights Reserved.</p></div>
     </footer>
 
