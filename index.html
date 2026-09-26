@@ -4,41 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>奈米感測實驗室 | 國立臺南大學 電機系</title>
-    <!-- 載入共用導覽列樣式 -->
     <link rel="stylesheet" href="style.css">
     <style>
         /* ================= 首頁專屬樣式 ================= */
-        
-        /* 1. 主視覺橫幅[cite: 18] */
         .hero-banner {
-            height: 70vh; /* 佔螢幕高度 70%，不塞滿 */
-            /* 預設背景圖，請將 images/bg-main.jpg 替換成你的樹狀或電路背景照 */
+            height: 70vh; 
             background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1518770660439-4636190af475?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
             display: flex;
             flex-direction: column;
             justify-content: center;
             padding: 0 10%;
             color: #ffffff;
-            margin-top: 60px; /* 避開導覽列高度 */
+            margin-top: 60px; 
         }
         .hero-banner h3 { font-size: 1.2rem; font-weight: 400; margin-bottom: 10px; letter-spacing: 2px; }
         .hero-banner h1 { font-size: 4rem; font-weight: bold; line-height: 1.2; margin-bottom: 5px; }
         .hero-banner h2 { font-size: 2.5rem; font-weight: normal; margin-bottom: 30px; color: #e0e0e0; }
-        
-        /* 模仿圖中的日期與黃色按鈕設計[cite: 18] */
         .hero-info-bar { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
         .hero-date { font-size: 2rem; font-weight: bold; display: flex; align-items: baseline; gap: 10px; }
         .hero-date span { font-size: 1.2rem; font-weight: normal; }
         .yellow-pill { background-color: #f3c623; color: #222; padding: 8px 20px; border-radius: 30px; font-weight: bold; font-size: 1rem; text-decoration: none; transition: background 0.3s; }
         .yellow-pill:hover { background-color: #d4a919; }
 
-        /* 2. 最新消息卡片區塊[cite: 17] */
+        /* ======== 最新消息無縫輪播區塊 ======== */
         .news-section { padding: 5rem 10%; background-color: #ffffff; text-align: center; }
         .section-title { font-size: 2rem; color: #333; margin-bottom: 3rem; font-weight: normal; letter-spacing: 2px; }
         
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; text-align: left; }
-        .news-card { background: #fff; border: 1px solid #eaeaea; border-radius: 4px; overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; display: flex; flex-direction: column; }
-        .news-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        .carousel-wrapper {
+            position: relative;
+            max-width: 1050px; 
+            margin: 0 auto;
+            padding: 0 50px; 
+        }
+        
+        .carousel-viewport {
+            overflow: hidden; 
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .news-grid { 
+            display: flex; 
+            gap: 20px; 
+            text-align: left; 
+            /* 滑動與透明度漸變的動畫設定 */
+            transition: transform 0.5s ease-in-out, opacity 0.3s ease; 
+        }
+
+        .news-card { 
+            flex: 0 0 calc((100% - 40px) / 3); 
+            background: #fff; border: 1px solid #eaeaea; border-radius: 8px; overflow: hidden; 
+            transition: box-shadow 0.3s; display: flex; flex-direction: column; 
+        }
+        .news-card:hover { box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
         .news-img { width: 100%; height: 200px; background-color: #f5f5f5; object-fit: cover; }
         .news-content { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
         .news-title { font-size: 1.2rem; font-weight: bold; color: #222; margin-bottom: 10px; line-height: 1.4; }
@@ -47,32 +65,75 @@
         .read-more { font-size: 0.9rem; color: #555; text-decoration: none; font-weight: bold; }
         .read-more:hover { color: #8e24aa; }
 
-        /* 3. 合作廠商與頁尾區塊[cite: 19] */
+        /* 左右切換按鈕 */
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ddd;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-btn:hover { background-color: #8e24aa; color: #fff; border-color: #8e24aa; }
+        .prev-btn { left: 0; }
+        .next-btn { right: 0; }
+
+        /* 導覽小點點 (Pagination Dots) */
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot:hover { background-color: #a0a0a0; }
+        .dot.active {
+            background-color: #8e24aa; /* 實驗室主題紫 */
+            width: 30px; /* 作用中時變成藥丸狀 */
+            border-radius: 10px;
+        }
+
+        /* 手機版：一次只顯示 1 張卡片 */
+        @media (max-width: 768px) {
+            .carousel-wrapper { padding: 0 40px; }
+            .news-card { flex: 0 0 100%; }
+        }
+
+        /* 頁尾區塊 */
         footer { background-color: #f8f9fa; padding: 4rem 10% 2rem 10%; color: #555; }
-        
-        /* 合作廠商 Logo 區 */
         .sponsors-area { text-align: center; margin-bottom: 3rem; }
         .sponsors-area h4 { font-size: 1.2rem; font-weight: normal; margin-bottom: 2rem; color: #333; }
         .sponsor-logos { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; align-items: center; margin-bottom: 2rem; }
         .sponsor-logos div { width: 120px; height: 50px; background-color: #e9ecef; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #999; border-radius: 4px; }
-        
         .footer-divider { height: 1px; background-color: #ddd; margin: 2rem 0; }
-        
-        /* 聯絡資訊區 */
         .contact-area { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
         .contact-area h4 { font-size: 1.2rem; color: #333; margin-bottom: 10px; }
         .contact-info-row { display: flex; gap: 40px; flex-wrap: wrap; font-size: 0.95rem; }
-        
         .copyright { text-align: center; font-size: 0.85rem; color: #888; margin-top: 2rem; }
     </style>
 </head>
 <body>
 
-    <!-- 導覽列保持不變 -->
     <nav>
-        <div class="logo">
-            <a href="index.html"><img src="images/logo.png" alt="奈米感測實驗室"></a>
-        </div>
+        <div class="logo"><a href="index.html"><img src="images/logo.png" alt="奈米感測實驗室"></a></div>
         <ul>
             <li><a href="index.html" style="color: #8e24aa; font-weight: bold;">首頁</a></li>
             <li><a href="about.html">關於實驗室</a></li>
@@ -82,7 +143,6 @@
         </ul>
     </nav>
 
-    <!-- 主視覺橫幅[cite: 18] -->
     <header class="hero-banner">
         <h3>國立臺南大學 電機工程學系</h3>
         <h1>奈米感測實驗室</h1>
@@ -94,50 +154,26 @@
         </div>
     </header>
 
-    <!-- 最新消息卡片區塊[cite: 17] -->
     <section id="news" class="news-section">
         <h2 class="section-title">最新消息</h2>
         
-        <div class="news-grid">
-            <!-- 卡片 1 -->
-            <div class="news-card">
-                <!-- 將 src 替換為你的普渡照片路徑 -->
-                <img src="images/LINE_ALBUM_2026實驗室普渡拜拜_260924_1.jpg" alt="普渡拜拜" class="news-img" onerror="this.src='https://via.placeholder.com/400x250?text=News+Image'">
-                <div class="news-content">
-                    <h3 class="news-title">實驗室普渡拜拜活動圓滿結束</h3>
-                    <div class="news-date">2026-09-08</div>
-                    <p class="news-excerpt">為祈求新學期實驗順利、機台運作平安，實驗室全體成員於系館前舉行中元普渡儀式，活動順利圓滿...</p>
-                    <a href="#" class="read-more">完整閱讀 ＞</a>
+        <div class="carousel-wrapper">
+            <button class="nav-btn prev-btn" id="prev-btn">❮</button>
+            
+            <div class="carousel-viewport">
+                <div class="news-grid" id="news-container">
+                    <p style="text-align: center; color: #666; width: 100%;">最新消息載入中...</p>
                 </div>
             </div>
 
-            <!-- 卡片 2 -->
-            <div class="news-card">
-                <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="網站上線" class="news-img">
-                <div class="news-content">
-                    <h3 class="news-title">賀！實驗室全新網站正式上線</h3>
-                    <div class="news-date">2026-09-24</div>
-                    <p class="news-excerpt">全新的奈米感測實驗室網站今日正式啟用！未來將在此公告最新研究成果、招生資訊與團隊動態...</p>
-                    <a href="#" class="read-more">完整閱讀 ＞</a>
-                </div>
-            </div>
-
-            <!-- 卡片 3 (預留空位，維持三欄平衡) -->
-            <div class="news-card">
-                <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="迎新活動" class="news-img">
-                <div class="news-content">
-                    <h3 class="news-title">115學年度 專題生迎新說明會</h3>
-                    <div class="news-date">2026-08-15</div>
-                    <p class="news-excerpt">歡迎大三同學加入奈米感測實驗室。本次說明會將介紹環境感測器開發與半導體元件製作等專題方向...</p>
-                    <a href="#" class="read-more">完整閱讀 ＞</a>
-                </div>
-            </div>
+            <button class="nav-btn next-btn" id="next-btn">❯</button>
         </div>
+
+        <!-- 小點點容器 -->
+        <div class="carousel-dots" id="carousel-dots"></div>
     </section>
 
-    <!-- 合作廠商與頁尾[cite: 19] -->
     <footer>
-        <!-- 合作/指導單位 Logo 區 -->
         <div class="sponsors-area">
             <h4>產學合作 / 合作廠商</h4>
             <div class="sponsor-logos">
@@ -147,23 +183,188 @@
                 <div>廠商 Logo 4</div>
             </div>
         </div>
-        
         <div class="footer-divider"></div>
-
-        <!-- 聯絡資訊區 -->
         <div class="contact-area">
             <h4>聯絡我們</h4>
             <div class="contact-info-row">
-                <p>電話：06-2606123 # 7404</p>
-                <p>信箱：[請填寫信箱]</p>
-                <p>地址：701臺南市東區榮譽街67號 C104室 (榮譽校區)</p>
+                <p>電話：06-2606123 # 7012</p>
+                <p>信箱：shwu@mail.nutn.edu.tw</p>
+                <p>地址：701臺南市東區榮譽街67號 ZA107-2室 (榮譽校區)</p>
             </div>
         </div>
-
         <div class="copyright">
             <p>&copy; 2026 國立臺南大學 電機工程學系 奈米感測實驗室. All Rights Reserved.</p>
         </div>
     </footer>
 
+    <script>
+        const scriptUrl = "https://script.google.com/macros/s/AKfycby6nER3S_UDSxUI6xuf5dh3erxRL4eqDlDSgIz09OL9f4PhDTuV8CS2X_8RDsoEAAGmOA/exec";
+
+        fetch(scriptUrl)
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('news-container');
+                const dotsContainer = document.getElementById('carousel-dots');
+                container.innerHTML = ''; 
+                dotsContainer.innerHTML = '';
+
+                let originalData = data.reverse();
+                let realTotal = originalData.length;
+                
+                if (realTotal === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: #666; width: 100%;">尚無最新消息</p>';
+                    return;
+                }
+
+                // 【防呆機制】：為了確保網頁有足夠的卡片來形成「無縫無限迴圈」
+                // 如果文章數小於 4 篇，程式會在背後自動複製一份資料來填滿軌道，但下方點點依然只會顯示真實的篇數
+                let renderData = [...originalData];
+                while (renderData.length < 4) {
+                    renderData = renderData.concat(originalData);
+                }
+
+                // 產生卡片
+                renderData.forEach((item, index) => {
+                    let imgSrc = 'https://via.placeholder.com/400x250?text=News+Image';
+                    if (item.image) {
+                        if (item.image.includes('drive.google.com')) {
+                            const match = item.image.match(/[-\w]{25,}/);
+                            if (match) imgSrc = `https://drive.google.com/thumbnail?id=${match[0]}&sz=w1000`;
+                        } else {
+                            imgSrc = item.image; 
+                        }
+                    }
+                    
+                    let dateStr = item.date ? (isNaN(new Date(item.date).getTime()) ? item.date : new Date(item.date).toLocaleDateString('zh-TW')) : "";
+                    
+                    // data-real-index 紀錄這張卡片對應的是第幾個「小點點」
+                    let realIndex = index % realTotal; 
+
+                    container.innerHTML += `
+                        <div class="news-card" data-real-index="${realIndex}">
+                            <img src="${imgSrc}" alt="${item.title}" class="news-img" onerror="this.src='https://via.placeholder.com/400x250?text=News+Image'">
+                            <div class="news-content">
+                                <h3 class="news-title">${item.title}</h3>
+                                <div class="news-date">${dateStr}</div>
+                                <p class="news-excerpt">${item.content}</p>
+                                <a href="article.html?title=${encodeURIComponent(item.title)}" class="read-more">完整閱讀 ＞</a>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // 產生下方小點點
+                for(let i = 0; i < realTotal; i++) {
+                    dotsContainer.innerHTML += `<div class="dot ${i === 0 ? 'active' : ''}" data-idx="${i}"></div>`;
+                }
+
+                initCarousel();
+            })
+            .catch(error => {
+                document.getElementById('news-container').innerHTML = '<p style="text-align: center; color: #666; width: 100%;">資料載入失敗，請稍後再試。</p>';
+            });
+
+        // ================= 核心邏輯：無縫輪播 =================
+        function initCarousel() {
+            const track = document.getElementById('news-container');
+            const dots = document.querySelectorAll('.dot');
+            let isAnimating = false;
+            let autoSlideInterval;
+
+            // 取得移動距離 (一張卡片的寬度 + 20px 的間距)
+            function getCardWidth() {
+                return track.firstElementChild.offsetWidth + 20; 
+            }
+
+            // 更新下方小點點的顏色
+            function updateActiveDot() {
+                let currentRealIndex = track.firstElementChild.dataset.realIndex;
+                dots.forEach(d => d.classList.remove('active'));
+                if(dots[currentRealIndex]) {
+                    dots[currentRealIndex].classList.add('active');
+                }
+            }
+
+            // 往右看下一張 (無限右滑)
+            function moveToNext() {
+                if (isAnimating) return;
+                isAnimating = true;
+                
+                track.style.transition = 'transform 0.5s ease-in-out';
+                track.style.transform = `translateX(-${getCardWidth()}px)`;
+
+                // 動畫結束後，瞬間把第一張卡片搬到最後面，並把軌道歸零 (視覺上零誤差)
+                track.addEventListener('transitionend', function handler() {
+                    track.removeEventListener('transitionend', handler);
+                    track.style.transition = 'none';
+                    track.appendChild(track.firstElementChild); 
+                    track.style.transform = 'translateX(0)';
+                    updateActiveDot();
+                    isAnimating = false;
+                });
+            }
+
+            // 往左看上一張 (無限左滑)
+            function moveToPrev() {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                // 瞬間把最後一張卡片搬到最前面，並把軌道往左推
+                track.style.transition = 'none';
+                track.insertBefore(track.lastElementChild, track.firstElementChild);
+                track.style.transform = `translateX(-${getCardWidth()}px)`;
+                
+                // 強制瀏覽器重新計算畫面
+                void track.offsetWidth;
+
+                // 再滑順地移動到歸零位置
+                track.style.transition = 'transform 0.5s ease-in-out';
+                track.style.transform = 'translateX(0)';
+
+                track.addEventListener('transitionend', function handler() {
+                    track.removeEventListener('transitionend', handler);
+                    updateActiveDot();
+                    isAnimating = false;
+                });
+            }
+
+            // 自動輪播
+            function startAutoSlide() {
+                autoSlideInterval = setInterval(moveToNext, 4000);
+            }
+            function resetAutoSlide() {
+                clearInterval(autoSlideInterval);
+                startAutoSlide();
+            }
+
+            // 綁定左右箭頭點擊事件
+            document.getElementById('next-btn').addEventListener('click', () => { moveToNext(); resetAutoSlide(); });
+            document.getElementById('prev-btn').addEventListener('click', () => { moveToPrev(); resetAutoSlide(); });
+
+            // 綁定小點點點擊事件 (使用淡入淡出效果來瞬間切換)
+            dots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    if (isAnimating) return;
+                    const targetIdx = parseInt(dot.dataset.idx);
+                    
+                    track.style.transition = 'opacity 0.3s ease';
+                    track.style.opacity = '0'; // 先讓卡片變透明
+                    
+                    setTimeout(() => {
+                        // 在隱藏狀態下，不斷搬動卡片直到第一張符合目標點點
+                        while (parseInt(track.firstElementChild.dataset.realIndex) !== targetIdx) {
+                            track.appendChild(track.firstElementChild);
+                        }
+                        updateActiveDot();
+                        track.style.opacity = '1'; // 再次顯示卡片
+                        resetAutoSlide();
+                    }, 300);
+                });
+            });
+
+            // 啟動輪播
+            startAutoSlide();
+        }
+    </script>
 </body>
 </html>

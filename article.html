@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最新消息 | 奈米感測實驗室</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .article-container { max-width: 900px; margin: 4rem auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .article-title { font-size: 2rem; color: var(--primary-purple); margin-bottom: 1rem; }
+        .article-date { color: #888; font-size: 0.95rem; margin-bottom: 2rem; border-bottom: 1px solid #eee; padding-bottom: 1rem; }
+        
+        /* 設定嵌入 Google Docs 的框架樣式 */
+        .doc-frame { width: 100%; height: 80vh; border: none; border-radius: 4px; background: #f9f9f9; }
+        
+        .back-btn { display: inline-block; margin-top: 2rem; padding: 10px 20px; background: var(--accent-pink); color: #fff; text-decoration: none; border-radius: 4px; transition: 0.3s; text-align: center; }
+        .back-btn:hover { background: #d81b60; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><a href="index.html"><img src="images/logo.png" alt="奈米感測實驗室"></a></div>
+        <ul>
+            <li><a href="index.html">首頁</a></li>
+            <li><a href="about.html">關於實驗室</a></li>
+            <li><a href="professor.html">指導教授</a></li>
+            <li><a href="members.html">團隊成員</a></li>
+            <li><a href="research.html">研究成果</a></li>
+        </ul>
+    </nav>
+
+    <section class="page-section gray-bg">
+        <div class="article-container" id="article-body">
+            <p style="text-align: center; color: #666;">文章載入中...</p>
+        </div>
+    </section>
+
+    <!-- Google Sheets API 動態讀取腳本 -->
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const articleTitle = urlParams.get('title');
+
+        const scriptUrl = "https://script.google.com/macros/s/AKfycby6nER3S_UDSxUI6xuf5dh3erxRL4eqDlDSgIz09OL9f4PhDTuV8CS2X_8RDsoEAAGmOA/exec";
+
+        fetch(scriptUrl)
+            .then(response => response.json())
+            .then(data => {
+                const   container = document.getElementById('article-body');
+                const article = data.find(item => item.title === articleTitle);
+
+                if (article) {
+                    let dateStr = "";
+                    if (article.date) {
+                        const d = new Date(article.date);
+                        dateStr = isNaN(d.getTime()) ? article.date : d.toLocaleDateString('zh-TW');
+                    }
+
+                    // 防呆機制：自動偵測 Google Docs 網址並加入嵌入參數
+                    let finalLink = article.link;
+                    if (finalLink && finalLink.includes('docs.google.com') && !finalLink.includes('embedded=true')) {
+                        finalLink += (finalLink.includes('?') ? '&' : '?') + 'embedded=true';
+                    }
+
+                    const contentHtml = finalLink 
+                        ? `<iframe src="${finalLink}" class="doc-frame" title="${article.title}" style="width: 100%; height: 80vh; border: none;"></iframe>` 
+                        : `<div style="padding: 2rem; text-align: center; color: #888;">尚未提供文章內容</div>`;
+
+                    container.innerHTML = `
+                        <h1 class="article-title">${article.title}</h1>
+                        <div class="article-date">${dateStr}</div>
+                        ${contentHtml}
+                        <div style="text-align: center;">
+                            <a href="index.html#news" class="back-btn">回最新消息</a>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = '<h2>找不到該篇文章</h2><a href="index.html#news" class="back-btn">回首頁</a>';
+                }
+            })
+            .catch(error => {
+                document.getElementById('article-body').innerHTML = '<p>資料載入失敗，請稍後再試。</p>';
+            });
+    </script>
+</body>
+</html>

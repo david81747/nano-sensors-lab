@@ -51,3 +51,70 @@ footer { background-color: #f8f9fa; padding: 4rem 10% 2rem 10%; color: #555; bor
 .contact-area h4 { font-size: 1.2rem; color: #333; margin-bottom: 10px; }
 .contact-info-row { display: flex; gap: 40px; flex-wrap: wrap; font-size: 0.95rem; }
 .copyright { text-align: center; font-size: 0.85rem; color: #888; margin-top: 2rem; }
+/* =========================================================
+   手機版響應式設計優化 (當螢幕寬度小於 768px 時觸發)
+========================================================= */
+@media (max-width: 768px) {
+    
+    /* 1. 導覽列優化：將 Logo 與選單改為上下排列，並允許選單換行 */
+    nav {
+        flex-direction: column;
+        padding: 15px 20px;
+        height: auto;
+    }
+    nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 15px;
+    }
+    nav ul li a {
+        font-size: 0.95rem;
+    }
+
+    /* 2. 主視覺橫幅：縮小巨型文字，改為置中對齊，減少左右留白 */
+    .hero-banner {
+        padding: 0 5%;
+        text-align: center;
+        align-items: center;
+        height: auto;
+        padding-top: 120px; /* 避開變高的導覽列 */
+        padding-bottom: 60px;
+    }
+    .hero-banner h1 { font-size: 2.2rem; }
+    .hero-banner h2 { font-size: 1.4rem; margin-bottom: 20px; }
+    .hero-banner h3 { font-size: 1rem; }
+    .hero-info-bar { justify-content: center; }
+    .hero-date { font-size: 1.5rem; }
+
+    /* 3. 整體版面空間：將電腦版的 10% 超大邊距縮小，把空間還給內容 */
+    .news-section, .page-section, footer {
+        padding: 3rem 5%; 
+    }
+
+    /* 4. 解決「研究成果」表格撐破畫面的問題 (讓表格可以在框內左右滑動) */
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap; /* 確保文字不會被硬擠斷 */
+        -webkit-overflow-scrolling: touch; /* 讓 iOS 滑動更順暢 */
+    }
+
+    /* 5. 頁尾聯絡資訊：由橫向改為直向排列 */
+    .contact-info-row {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    .contact-area h4, .sponsors-area h4 {
+        text-align: center;
+    }
+
+    /* 6. 文章內頁 (article.html) 圖片與框架限制 */
+    .article-img {
+        max-height: 300px; /* 手機上圖片不要太高 */
+    }
+    .doc-frame {
+        height: 60vh; /* 稍微縮減 Google Docs 嵌入框的高度 */
+    }
+}

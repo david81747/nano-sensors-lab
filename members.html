@@ -6,90 +6,30 @@
     <title>團隊成員 | 奈米感測實驗室</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* 側邊欄與內容佈局 */
-        .layout-container {
-            display: flex;
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            align-items: flex-start;
-        }
-
-        /* 側邊導覽選單設計 */
-        .sidebar-menu {
-            width: 250px;
-            background-color: #f5f6f8;
-            border-radius: 8px;
-            padding: 1rem 0;
-            flex-shrink: 0;
-            position: sticky;
-            top: 90px;
-        }
+        .members-layout { display: flex; gap: 3rem; margin-top: 2rem; align-items: flex-start; }
         
-        .menu-title {
-            padding: 0.5rem 1.5rem 1rem;
-            font-size: 1.2rem;
-            color: #333;
-            font-weight: bold;
-            border-bottom: 1px solid #e0e0e0;
-            margin-bottom: 0.5rem;
-        }
-
-        .menu-item {
-            display: block;
-            padding: 0.8rem 1.5rem;
-            color: #555;
-            text-decoration: none;
-            transition: all 0.3s;
-            cursor: pointer;
-            border-left: 4px solid transparent;
-        }
-
-        .menu-item:hover, .menu-item.active {
-            background-color: #fff;
-            color: var(--primary-purple);
-            border-left: 4px solid var(--accent-pink);
-            font-weight: bold;
-        }
-
-        /* 右側成員內容區 */
-        .content-area {
-            flex-grow: 1;
-        }
-
-        /* 隱藏/顯示控制 */
-        .year-section {
-            display: none;
-            animation: fadeIn 0.4s ease-in;
-        }
-        .year-section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 成員卡片設計 (已移除研究方向相關樣式，更加精簡) */
-        .category-title { font-size: 1.5rem; color: var(--primary-purple); margin: 0 0 1.5rem; display: flex; align-items: center; gap: 15px; }
-        .category-title::after { content: ''; flex-grow: 1; height: 1px; background-color: var(--border-color); }
+        /* 左側選單樣式 */
+        .member-tabs { width: 220px; flex-shrink: 0; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
+        .member-tab-btn { width: 100%; padding: 15px 20px; border: none; background: none; text-align: left; font-size: 1rem; color: #555; cursor: pointer; border-left: 4px solid transparent; transition: 0.2s; }
+        .member-tab-btn:hover { background-color: #f8f9fa; color: var(--primary-purple); }
+        .member-tab-btn.active { border-left-color: var(--primary-purple); color: var(--primary-purple); background-color: #f3e5f5; font-weight: bold; }
         
-        .sub-category-title { font-size: 1.2rem; color: #555; margin: 0 0 1rem; font-weight: bold; }
+        /* 右側成員內容區塊 */
+        .member-content-area { flex-grow: 1; }
+        .group-section { margin-bottom: 2.5rem; }
+        .group-header { font-size: 1.3rem; color: #333; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
         
-        .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
-        
-        .member-card { background: #fff; padding: 2rem 1.5rem; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: all 0.3s; }
-        .member-card:hover { transform: translateY(-5px); border-color: var(--primary-purple); box-shadow: 0 10px 20px rgba(142, 36, 170, 0.1); }
-        
-        .avatar { width: 90px; height: 90px; background-color: #f0f0f0; border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; color: #ccc; }
-        .member-name { font-size: 1.3rem; color: var(--nav-text); margin-bottom: 5px; font-weight: bold; }
-        .member-role { font-size: 0.95rem; color: var(--accent-pink); }
-        
-        /* RWD 適應 */
+        .member-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.5rem; }
+        .member-card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.03); text-align: center; border: 1px solid #eee; transition: transform 0.2s; }
+        .member-card:hover { transform: translateY(-3px); }
+        .member-photo { width: 100%; height: 220px; object-fit: cover; background: #f0f0f0; }
+        .member-info { padding: 15px; }
+        .member-name { font-size: 1.1rem; font-weight: bold; color: #222; margin-bottom: 5px; }
+        .member-role { font-size: 0.85rem; color: #666; }
+
         @media (max-width: 768px) {
-            .layout-container { flex-direction: column; }
-            .sidebar-menu { width: 100%; position: static; }
+            .members-layout { flex-direction: column; }
+            .member-tabs { width: 100%; }
         }
     </style>
 </head>
@@ -107,155 +47,136 @@
         </ul>
     </nav>
 
+    <!-- 主內容區塊 -->
     <section class="page-section gray-bg">
         <h2 class="section-title">團隊成員</h2>
         
-        <div class="layout-container">
-            <!-- 左側選單 -->
-            <div class="sidebar-menu">
-                <div class="menu-title">年度切換</div>
-                <div class="menu-item active" data-target="year-current">在校生</div>
-                <div class="menu-item" data-target="year-115">115 級畢業生</div>
-                <div class="menu-item" data-target="year-114">114 級畢業生</div>
-                <div class="menu-item" data-target="year-113">113 級畢業生</div>
-                <div class="menu-item" data-target="year-112">112 級畢業生</div>
+        <div class="members-layout">
+            <!-- 左側側邊欄動態選單 -->
+            <div class="member-tabs" id="menu-tab-container">
+                <button class="member-tab-btn">載入中...</button>
             </div>
 
-            <!-- 右側內容 -->
-            <div class="content-area">
-                
-                <!-- 在校生區塊 (預設顯示) -->
-                <div id="year-current" class="year-section active">
-                    
-                    <h3 class="category-title">碩士班</h3>
-                    
-                    <h4 class="sub-category-title">116 級 (碩二)</h4>
-                    <div class="member-grid">
-                        <div class="member-card">
-                            <div class="avatar">照片</div>
-                            <div class="member-name">學長姐 A</div>
-                            <div class="member-role">碩二生</div>
-                        </div>
-                    </div>
-                    
-                    <h4 class="sub-category-title">117 級 (碩一)</h4>
-                    <div class="member-grid">
-                        <div class="member-card">
-                            <div class="avatar">照片</div>
-                            <div class="member-name">學弟妹 A</div>
-                            <div class="member-role">碩一生</div>
-                        </div>
-                    </div>
-
-                    <h3 class="category-title">大學部專題生</h3>
-                    
-                    <h4 class="sub-category-title">大四</h4>
-                    <div class="member-grid">
-                        <div class="member-card">
-                            <div class="avatar">照片</div>
-                            <div class="member-name">學長姐 B</div>
-                            <div class="member-role">大四專題生</div>
-                        </div>
-                    </div>
-                    
-                    <h4 class="sub-category-title">大三</h4>
-                    <div class="member-grid">
-                        <div class="member-card">
-                            <div class="avatar">照片</div>
-                            <div class="member-name">郭哲源</div>
-                            <div class="member-role">大三專題生</div>
-                        </div>
-                        <div class="member-card">
-                            <div class="avatar">照片</div>
-                            <div class="member-name">同學 B</div>
-                            <div class="member-role">大三專題生</div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- 115級畢業生區塊 -->
-                <div id="year-115" class="year-section">
-                    <h3 class="category-title">115 級畢業生</h3>
-                    <div class="member-grid">
-                        <div class="member-card">
-                            <div class="avatar">照片</div>
-                            <div class="member-name">學長 A</div>
-                            <div class="member-role">碩士畢業</div>
-                        </div>
-                        <div class="member-card">
-                            <div class="avatar">照片</div>
-                            <div class="member-name">學姊 B</div>
-                            <div class="member-role">碩士畢業</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 114級畢業生區塊 -->
-                <div id="year-114" class="year-section">
-                    <h3 class="category-title">114 級畢業生</h3>
-                    <div class="member-grid">
-                        <div class="member-card">
-                            <div class="avatar">照片</div>
-                            <div class="member-name">學長 C</div>
-                            <div class="member-role">碩士畢業</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 其他年度佔位符 -->
-                <div id="year-113" class="year-section">
-                    <h3 class="category-title">113 級畢業生</h3>
-                    <p style="color: #666;">資料建檔中...</p>
-                </div>
-                
-                <div id="year-112" class="year-section">
-                    <h3 class="category-title">112 級畢業生</h3>
-                    <p style="color: #666;">資料建檔中...</p>
-                </div>
-
+            <!-- 右側成員名單展示區 -->
+            <div class="member-content-area" id="member-display-area">
+                <p style="color: #666;">資料載入中...</p>
             </div>
         </div>
     </section>
 
-    <!-- 頁尾 -->
     <footer>
-        <div class="sponsors-area">
-            <h4>產學合作 / 合作廠商</h4>
-            <div class="sponsor-logos">
-                <div>廠商 Logo 1</div><div>廠商 Logo 2</div>
-            </div>
-        </div>
-        <div class="footer-divider"></div>
-        <div class="contact-area">
-            <h4>聯絡我們</h4>
-            <div class="contact-info-row">
-                <p>電話：06-2606123 # 7012</p>
-                <p>信箱：shwu@mail.nutn.edu.tw</p>
-                <p>地址：701臺南市東區榮譽街67號 ZA107-2室 (榮譽校區)</p>
-            </div>
-        </div>
         <div class="copyright"><p>&copy; 2026 國立臺南大學 電機工程學系 奈米感測實驗室. All Rights Reserved.</p></div>
     </footer>
 
-    <!-- JavaScript 切換邏輯 -->
+    <!-- 動態串接與自動分類腳本 -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuItems = document.querySelectorAll('.menu-item');
-            const yearSections = document.querySelectorAll('.year-section');
+        const scriptUrl = "https://script.google.com/macros/s/AKfycby6nER3S_UDSxUI6xuf5dh3erxRL4eqDlDSgIz09OL9f4PhDTuV8CS2X_8RDsoEAAGmOA/exec?sheet=團隊成員";
 
-            menuItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    menuItems.forEach(nav => nav.classList.remove('active'));
-                    this.classList.add('active');
+        // Google Drive 圖片防呆解析函式
+        function getDriveImageUrl(rawUrl) {
+            if (!rawUrl) return 'https://via.placeholder.com/200x220?text=Member';
+            if (rawUrl.includes('drive.google.com')) {
+                const match = rawUrl.match(/[-\w]{25,}/);
+                return match ? `https://drive.google.com/thumbnail?id=${match[0]}&sz=w600` : rawUrl;
+            }
+            return rawUrl;
+        }
 
-                    yearSections.forEach(section => section.classList.remove('active'));
+        let allMembersData = [];
 
-                    const targetId = this.getAttribute('data-target');
-                    document.getElementById(targetId).classList.add('active');
+        fetch(scriptUrl)
+            .then(res => res.json())
+            .then(data => {
+                allMembersData = data;
+                const tabContainer = document.getElementById('menu-tab-container');
+                
+                // 1. 抓取所有不重複的 menu_group 作為左側分類按鈕
+                const groups = [...new Set(data.map(item => item.menu_group).filter(g => g))];
+                
+                if (groups.length === 0) {
+                    document.getElementById('member-display-area').innerHTML = '<p>目前尚無成員資料。</p>';
+                    tabContainer.innerHTML = '';
+                    return;
+                }
+
+                tabContainer.innerHTML = '';
+
+                // 2. 建立側邊按鈕
+                groups.forEach((groupName, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = `member-tab-btn ${index === 0 ? 'active' : ''}`;
+                    btn.textContent = groupName;
+                    btn.onclick = () => {
+                        document.querySelectorAll('.member-tab-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        renderGroupMembers(groupName);
+                    };
+                    tabContainer.appendChild(btn);
                 });
+
+                // 3. 預設顯示第一個分類的成員名單
+                renderGroupMembers(groups[0]);
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('member-display-area').innerHTML = '<p>資料載入失敗，請確認 API 權限或稍後再試。</p>';
             });
-        });
+
+        // 渲染指定分類下的成員名單
+        function renderGroupMembers(groupName) {
+            const displayArea = document.getElementById('member-display-area');
+            displayArea.innerHTML = '';
+
+            // 篩選屬於該分類的所有資料
+            const members = allMembersData.filter(item => item.menu_group === groupName);
+
+            // 抓取該分類下所有次標題（如：碩班、大四）
+            const subTitles = [...new Set(members.map(m => m.sub_title).filter(s => s))];
+
+            if (subTitles.length === 0) {
+                // 如果沒有設定次標題，直接平鋪顯示卡片
+                displayArea.appendChild(createCardsGrid(members));
+                return;
+            }
+
+            // 依次標題分組渲染
+            subTitles.forEach(sub => {
+                const subMembers = members.filter(m => m.sub_title === sub);
+                
+                const groupSection = document.createElement('div');
+                groupSection.className = 'group-section';
+
+                const header = document.createElement('h3');
+                header.className = 'group-header';
+                header.textContent = sub;
+                groupSection.appendChild(header);
+
+                groupSection.appendChild(createCardsGrid(subMembers));
+                displayArea.appendChild(groupSection);
+            });
+        }
+
+        // 建立名片網格函式
+        function createCardsGrid(memberList) {
+            const grid = document.createElement('div');
+            grid.className = 'member-cards-grid';
+
+            memberList.forEach(m => {
+                const photoSrc = getDriveImageUrl(m.image);
+                const card = document.createElement('div');
+                card.className = 'member-card';
+                card.innerHTML = `
+                    <img src="${photoSrc}" alt="${m.name}" class="member-photo" onerror="this.src='https://via.placeholder.com/200x220?text=Member'">
+                    <div class="member-info">
+                        <div class="member-name">${m.name}</div>
+                        <div class="member-role">${m.role || ''}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            return grid;
+        }
     </script>
 </body>
 </html>
