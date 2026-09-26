@@ -21,7 +21,11 @@
 
     <nav>
         <div class="logo"><a href="index.html"><img src="images/logo.png" alt="奈米感測實驗室"></a></div>
-        <ul>
+        
+        <!-- 手機版漢堡按鈕 -->
+        <div class="menu-toggle" id="mobile-menu">☰</div>
+        
+        <ul id="nav-menu">
             <li><a href="index.html">首頁</a></li>
             <li><a href="about.html">關於實驗室</a></li>
             <li><a href="professor.html">指導教授</a></li>
@@ -38,6 +42,14 @@
 
     <!-- Google Sheets API 動態讀取腳本 -->
     <script>
+        // 漢堡選單切換邏輯
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navMenu = document.getElementById('nav-menu');
+        if(mobileMenu && navMenu) {
+            mobileMenu.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+        }
         const urlParams = new URLSearchParams(window.location.search);
         const articleTitle = urlParams.get('title');
 

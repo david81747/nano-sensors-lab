@@ -10,9 +10,13 @@
 
     <nav>
         <div class="logo"><a href="index.html"><img src="images/logo.png" alt="奈米感測實驗室"></a></div>
-        <ul>
+        
+        <!-- 手機版漢堡按鈕 -->
+        <div class="menu-toggle" id="mobile-menu">☰</div>
+        
+        <ul id="nav-menu">
             <li><a href="index.html">首頁</a></li>
-            <li><a href="about.html" class="active">關於實驗室</a></li>
+            <li><a href="about.html">關於實驗室</a></li>
             <li><a href="professor.html">指導教授</a></li>
             <li><a href="members.html">團隊成員</a></li>
             <li><a href="research.html">研究成果</a></li>
@@ -72,5 +76,17 @@
         </div>
         <div class="copyright"><p>&copy; 2026 國立臺南大學 電機工程學系 奈米感測實驗室. All Rights Reserved.</p></div>
     </footer>
+
+    <!-- 就是缺了這段！漢堡選單切換邏輯 -->
+    <script>
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navMenu = document.getElementById('nav-menu');
+        
+        if(mobileMenu && navMenu) {
+            mobileMenu.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+        }
+    </script>
 </body>
 </html>

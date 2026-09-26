@@ -134,8 +134,12 @@
 
     <nav>
         <div class="logo"><a href="index.html"><img src="images/logo.png" alt="奈米感測實驗室"></a></div>
-        <ul>
-            <li><a href="index.html" style="color: #8e24aa; font-weight: bold;">首頁</a></li>
+        
+        <!-- 手機版漢堡按鈕 -->
+        <div class="menu-toggle" id="mobile-menu">☰</div>
+        
+        <ul id="nav-menu">
+            <li><a href="index.html">首頁</a></li>
             <li><a href="about.html">關於實驗室</a></li>
             <li><a href="professor.html">指導教授</a></li>
             <li><a href="members.html">團隊成員</a></li>
@@ -198,6 +202,14 @@
     </footer>
 
     <script>
+        // 漢堡選單切換邏輯
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navMenu = document.getElementById('nav-menu');
+        if(mobileMenu && navMenu) {
+            mobileMenu.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+        }
         const scriptUrl = "https://script.google.com/macros/s/AKfycby6nER3S_UDSxUI6xuf5dh3erxRL4eqDlDSgIz09OL9f4PhDTuV8CS2X_8RDsoEAAGmOA/exec";
 
         fetch(scriptUrl)
