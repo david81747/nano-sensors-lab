@@ -248,13 +248,17 @@
                     }
                     let dateStr = item.date ? (isNaN(new Date(item.date).getTime()) ? item.date : new Date(item.date).toLocaleDateString('zh-TW')) : "";
                     
+                    // 【重點修改】：這裡改讀取 item.summary，而不是 item.content
+                    let summaryText = item.summary ? item.summary : '點擊「完整閱讀」查看詳細資訊...';
+                    
                     container.innerHTML += `
                         <div class="news-card" data-index="${index}">
                             <img src="${imgSrc}" alt="${item.title}" class="news-img" onerror="this.src='https://via.placeholder.com/400x250?text=News+Image'">
                             <div class="news-content">
                                 <h3 class="news-title">${item.title}</h3>
                                 <div class="news-date">${dateStr}</div>
-                                <p class="news-excerpt">${item.content}</p>
+                                <!-- 這裡套用新的 summaryText -->
+                                <p class="news-excerpt">${summaryText}</p>
                                 <a href="article.html?title=${encodeURIComponent(item.title)}" class="read-more">完整閱讀 ＞</a>
                             </div>
                         </div>
@@ -271,7 +275,7 @@
                 document.getElementById('news-container').innerHTML = '<p style="text-align: center; color: #666; width: 100%;">資料載入失敗，請稍後再試。</p>';
             });
 
-        // 輪播與觸控滑動邏輯
+        // 輪播與觸控滑動邏輯 (完全保留你原本的寫法)
         function initCarousel(totalCards) {
             const track = document.getElementById('news-container');
             const dots = document.querySelectorAll('.dot');
