@@ -2,59 +2,151 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 加入 maximum-scale=1.0 確保手機端不會因為雙擊而縮放跑版 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>團隊成員 | 奈米感測實驗室</title>
-    <!-- 修正 1：補上最新的 CSS 版本號 -->
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
     <style>
-        .members-layout { display: flex; gap: 3rem; margin-top: 2rem; align-items: flex-start; }
-        
-        /* 左側選單樣式 */
-        .member-tabs { width: 220px; flex-shrink: 0; background: #fff; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); overflow: hidden; }
-        .member-tab-btn { width: 100%; padding: 15px 20px; border: none; background: none; text-align: left; font-size: 1rem; color: #555; cursor: pointer; border-left: 4px solid transparent; transition: 0.2s; }
-        .member-tab-btn:hover { background-color: #f8f9fa; color: var(--primary-purple); }
-        .member-tab-btn.active { border-left-color: var(--primary-purple); color: var(--primary-purple); background-color: #f3e5f5; font-weight: bold; }
-        
-        /* 右側成員內容區塊 */
-        .member-content-area { flex-grow: 1; }
-        .group-section { margin-bottom: 2.5rem; }
-        .group-header { font-size: 1.3rem; color: #333; margin-bottom: 1.5rem; border-bottom: 2px solid #eee; padding-bottom: 0.5rem; }
-        
-        /* 限制卡片最大寬度，避免只有一人時被拉伸到全螢幕 */
-        .member-cards-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(200px, 250px)); 
-            gap: 1.5rem; 
-            justify-content: start; 
+        /* ================= 團隊成員專屬佈局 ================= */
+        body, html {
+            overflow-x: hidden;
+            background-color: #fcfcfc;
         }
-        
-        /* 強制卡片內部採用彈性排版，確保每一排的卡片都一樣高 */
-        .member-card { 
-            background: #fff; border-radius: 8px; overflow: hidden; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03); text-align: center; 
-            border: 1px solid #eee; transition: transform 0.2s; 
-            display: flex; flex-direction: column; height: 100%; 
-        }
-        .member-card:hover { transform: translateY(-3px); }
-        
-        /* 強制覆蓋任何設定，確保高度絕對統一，填滿不變形 */
-        .member-photo { 
-            width: 100%; 
-            height: 220px !important; 
-            object-fit: cover !important; 
-            display: block; background: #f0f0f0; 
-        }
-        
-        /* 讓姓名與職稱區塊自動填滿剩下的空間並置中 */
-        .member-info { 
-            padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; 
-        }
-        .member-name { font-size: 1.1rem; font-weight: bold; color: #222; margin-bottom: 5px; }
-        .member-role { font-size: 0.85rem; color: #666; }
 
+        /* 撐開頁面寬度，分配左右側比例 */
+        .members-page-wrapper {
+            max-width: 1200px; 
+            margin: 100px auto 4rem auto; 
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 250px 1fr; /* 左邊選單佔 250px，右邊佔滿 1fr */
+            gap: 40px;
+            align-items: start;
+        }
+
+        /* 左側側邊欄設計 */
+        .sidebar-menu {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            overflow: hidden;
+            position: sticky;
+            top: 90px;
+        }
+        .sidebar-item {
+            display: block;
+            padding: 16px 20px;
+            color: #555;
+            text-decoration: none;
+            border-left: 4px solid transparent;
+            transition: 0.3s;
+            font-weight: bold;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+        }
+        .sidebar-item:last-child { border-bottom: none; }
+        .sidebar-item:hover, .sidebar-item.active {
+            background: #fdf2f8;
+            color: var(--primary-purple);
+            border-left-color: var(--primary-purple);
+        }
+
+        /* 右側內容區 */
+        .members-content {
+            width: 100%;
+        }
+        .category-title {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 2rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        /* 卡片網格：自動填滿右側空間 */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            margin-bottom: 3rem;
+        }
+
+        /* 卡片本體設計 */
+        .member-card {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+            padding-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+        .member-img-wrapper {
+            width: 100%;
+            aspect-ratio: 1 / 1.1; /* 讓大頭照比例更修長好看 */
+            background: #f0f0f0;
+            overflow: hidden;
+        }
+        .member-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        .member-card:hover .member-img-wrapper img {
+            transform: scale(1.05); /* 滑鼠游標經過時微微放大 */
+        }
+        .member-name {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #222;
+            margin: 15px 0 5px 0;
+        }
+        .member-title {
+            font-size: 0.95rem;
+            color: #888;
+        }
+
+        /* ================= 手機版專屬優化 ================= */
         @media (max-width: 768px) {
-            .members-layout { flex-direction: column; }
-            .member-tabs { width: 100%; }
+            .members-page-wrapper {
+                grid-template-columns: 1fr;
+                padding: 15px;
+                gap: 25px;
+                margin-top: 70px;
+            }
+            .sidebar-menu {
+                position: relative;
+                top: 0;
+                display: flex;
+                flex-wrap: wrap;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            }
+            .sidebar-item {
+                flex: 1 1 45%;
+                text-align: center;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+            .sidebar-item:hover, .sidebar-item.active {
+                border-left-color: transparent;
+                border-bottom-color: var(--primary-purple);
+            }
+            .members-grid {
+                grid-template-columns: repeat(2, 1fr); /* 手機版並排 2 張卡片 */
+                gap: 15px;
+            }
+        }
+        @media (max-width: 480px) {
+            .members-grid {
+                grid-template-columns: 1fr; /* 螢幕極小時單排 */
+            }
         }
     </style>
 </head>
@@ -63,38 +155,31 @@
     <!-- 導覽列 -->
     <nav>
         <div class="logo"><a href="index.html"><img src="images/logo.png" alt="奈米感測實驗室"></a></div>
-        
-        <!-- 手機版漢堡按鈕 -->
         <div class="menu-toggle" id="mobile-menu">☰</div>
-        
         <ul id="nav-menu">
             <li><a href="index.html">首頁</a></li>
             <li><a href="about.html">關於實驗室</a></li>
             <li><a href="professor.html">指導教授</a></li>
-            <!-- 修正 2：將當前頁面「團隊成員」加上高亮標示 -->
             <li><a href="members.html" style="color: #8e24aa; font-weight: bold;">團隊成員</a></li>
             <li><a href="research.html">研究成果</a></li>
         </ul>
     </nav>
 
-    <!-- 主內容區塊 -->
-    <section class="page-section gray-bg">
-        <h2 class="section-title">團隊成員</h2>
+    <!-- 頁面主體：左側邊欄 + 右側網格 -->
+    <div class="members-page-wrapper">
         
-        <div class="members-layout">
-            <!-- 左側側邊欄動態選單 -->
-            <div class="member-tabs" id="menu-tab-container">
-                <button class="member-tab-btn">載入中...</button>
-            </div>
+        <!-- 左側側邊欄動態選單 (由 JS 生成) -->
+        <aside class="sidebar-menu" id="menu-tab-container">
+            <a href="#" class="sidebar-item">載入中...</a>
+        </aside>
 
-            <!-- 右側成員名單展示區 -->
-            <div class="member-content-area" id="member-display-area">
-                <p style="color: #666;">資料載入中...</p>
-            </div>
-        </div>
-    </section>
+        <!-- 右側成員內容區塊 (由 JS 生成) -->
+        <main class="members-content" id="member-display-area">
+            <p style="color: #666; text-align: center; padding: 2rem;">資料載入中...</p>
+        </main>
+    </div>
 
-    <!-- 修正 3：補齊完整的頁尾 -->
+    <!-- 頁尾 -->
     <footer>
         <div class="sponsors-area">
             <h4>產學合作 / 合作廠商</h4>
@@ -114,21 +199,20 @@
         <div class="copyright"><p>&copy; 2026 國立臺南大學 電機工程學系 奈米感測實驗室. All Rights Reserved.</p></div>
     </footer>
 
-    <!-- 動態串接與自動分類腳本 -->
+    <!-- 重新加回：動態串接與自動分類腳本 -->
     <script>
-        // 漢堡選單切換邏輯
+        // 漢堡選單邏輯
         const mobileMenu = document.getElementById('mobile-menu');
         const navMenu = document.getElementById('nav-menu');
         if(mobileMenu && navMenu) {
-            mobileMenu.addEventListener('click', () => {
-                navMenu.classList.toggle('active');
-            });
+            mobileMenu.addEventListener('click', () => { navMenu.classList.toggle('active'); });
         }
+
         const scriptUrl = "https://script.google.com/macros/s/AKfycby6nER3S_UDSxUI6xuf5dh3erxRL4eqDlDSgIz09OL9f4PhDTuV8CS2X_8RDsoEAAGmOA/exec?sheet=團隊成員";
 
-        // Google Drive 圖片防呆解析函式
+        // Google Drive 圖片防呆解析函式 (保留你原本的強大功能)
         function getDriveImageUrl(rawUrl) {
-            if (!rawUrl) return 'https://via.placeholder.com/200x220?text=Member';
+            if (!rawUrl) return 'https://via.placeholder.com/300x350?text=Member';
             if (rawUrl.includes('drive.google.com')) {
                 const match = rawUrl.match(/[-\w]{25,}/);
                 return match ? `https://drive.google.com/thumbnail?id=${match[0]}&sz=w600` : rawUrl;
@@ -148,20 +232,23 @@
                 const groups = [...new Set(data.map(item => item.menu_group).filter(g => g))];
                 
                 if (groups.length === 0) {
-                    document.getElementById('member-display-area').innerHTML = '<p>目前尚無成員資料。</p>';
+                    document.getElementById('member-display-area').innerHTML = '<p style="text-align: center;">目前尚無成員資料。</p>';
                     tabContainer.innerHTML = '';
                     return;
                 }
 
                 tabContainer.innerHTML = '';
 
-                // 2. 建立側邊按鈕
+                // 2. 建立側邊按鈕 (結合新的 sidebar-item 樣式)
                 groups.forEach((groupName, index) => {
-                    const btn = document.createElement('button');
-                    btn.className = `member-tab-btn ${index === 0 ? 'active' : ''}`;
+                    const btn = document.createElement('a');
+                    btn.href = "#"; // 避免網頁亂跳
+                    btn.className = `sidebar-item ${index === 0 ? 'active' : ''}`;
                     btn.textContent = groupName;
-                    btn.onclick = () => {
-                        document.querySelectorAll('.member-tab-btn').forEach(b => b.classList.remove('active'));
+                    
+                    btn.onclick = (e) => {
+                        e.preventDefault(); // 阻止 a 標籤預設跳轉
+                        document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
                         btn.classList.add('active');
                         renderGroupMembers(groupName);
                     };
@@ -173,7 +260,7 @@
             })
             .catch(err => {
                 console.error(err);
-                document.getElementById('member-display-area').innerHTML = '<p>資料載入失敗，請確認 API 權限或稍後再試。</p>';
+                document.getElementById('member-display-area').innerHTML = '<p style="text-align: center; color: red;">資料載入失敗，請確認 API 權限或稍後再試。</p>';
             });
 
         // 渲染指定分類下的成員名單
@@ -181,27 +268,23 @@
             const displayArea = document.getElementById('member-display-area');
             displayArea.innerHTML = '';
 
-            // 篩選屬於該分類的所有資料
             const members = allMembersData.filter(item => item.menu_group === groupName);
-
-            // 抓取該分類下所有次標題（如：碩班、大四）
             const subTitles = [...new Set(members.map(m => m.sub_title).filter(s => s))];
 
             if (subTitles.length === 0) {
-                // 如果沒有設定次標題，直接平鋪顯示卡片
                 displayArea.appendChild(createCardsGrid(members));
                 return;
             }
 
-            // 依次標題分組渲染
             subTitles.forEach(sub => {
                 const subMembers = members.filter(m => m.sub_title === sub);
                 
                 const groupSection = document.createElement('div');
                 groupSection.className = 'group-section';
 
-                const header = document.createElement('h3');
-                header.className = 'group-header';
+                // 換成新的標題樣式 class="category-title"
+                const header = document.createElement('h2');
+                header.className = 'category-title';
                 header.textContent = sub;
                 groupSection.appendChild(header);
 
@@ -210,21 +293,21 @@
             });
         }
 
-        // 建立名片網格函式
+        // 建立名片網格函式 (對齊新的 CSS 結構)
         function createCardsGrid(memberList) {
             const grid = document.createElement('div');
-            grid.className = 'member-cards-grid';
+            grid.className = 'members-grid';
 
             memberList.forEach(m => {
                 const photoSrc = getDriveImageUrl(m.image);
                 const card = document.createElement('div');
                 card.className = 'member-card';
                 card.innerHTML = `
-                    <img src="${photoSrc}" alt="${m.name}" class="member-photo" onerror="this.src='https://via.placeholder.com/200x220?text=Member'">
-                    <div class="member-info">
-                        <div class="member-name">${m.name}</div>
-                        <div class="member-role">${m.role || ''}</div>
+                    <div class="member-img-wrapper">
+                        <img src="${photoSrc}" alt="${m.name}" onerror="this.src='https://via.placeholder.com/300x350?text=Member'">
                     </div>
+                    <div class="member-name">${m.name}</div>
+                    <div class="member-title">${m.role || ''}</div>
                 `;
                 grid.appendChild(card);
             });

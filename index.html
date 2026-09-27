@@ -253,11 +253,16 @@
                     
                     container.innerHTML += `
                         <div class="news-card" data-index="${index}">
-                            <img src="${imgSrc}" alt="${item.title}" class="news-img" onerror="this.src='https://via.placeholder.com/400x250?text=News+Image'">
+                            <!-- 1. 讓圖片可以點擊 -->
+                            <a href="article.html?title=${encodeURIComponent(item.title)}" style="display: block;">
+                                <img src="${imgSrc}" alt="${item.title}" class="news-img" onerror="this.src='https://via.placeholder.com/400x250?text=News+Image'">
+                            </a>
                             <div class="news-content">
-                                <h3 class="news-title">${item.title}</h3>
+                                <!-- 2. 順便讓大標題也可以點擊 (維持原本顏色與底線去除) -->
+                                <a href="article.html?title=${encodeURIComponent(item.title)}" style="text-decoration: none; color: inherit;">
+                                    <h3 class="news-title">${item.title}</h3>
+                                </a>
                                 <div class="news-date">${dateStr}</div>
-                                <!-- 這裡套用新的 summaryText -->
                                 <p class="news-excerpt">${summaryText}</p>
                                 <a href="article.html?title=${encodeURIComponent(item.title)}" class="read-more">完整閱讀 ＞</a>
                             </div>
@@ -362,7 +367,7 @@
                 }
             }
 
-            track.addEventListener('touchstart', e => {
+            track.addEventListener('touchstart', e   => {
                 touchstartX = e.changedTouches[0].screenX;
             }, {passive: true});
 
